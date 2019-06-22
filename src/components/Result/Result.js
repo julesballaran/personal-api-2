@@ -12,21 +12,21 @@ export default class Result extends Component {
         <div className="result-content">
           {this.props.result.map(card => {
             return card.type === 'Spell Card' || card.type === 'Trap Card' ? 
-              <div key={card.id} className="result-card" onClick={() => this.props.handleViewCard(card)} onDragStart='deck.drag(this, event)' id='${card.id}' draggable="true">
+              <div key={card.id} className="result-card" onClick={() => this.props.handleViewCard(card.id)} onDragStart='deck.drag(this, event)' id='${card.id}' draggable="true">
                 <img src={card.card_images[0].image_url_small} alt=""/>
                 <p>{card.name}<br/>
                     {card.type}<br/>
                 </p>
               </div>
             : (card.type === 'Link Monster') ?
-              <div key={card.id} className="result-card" onClick={() => this.props.handleViewCard(card)} onDragStart='deck.drag(this, event)' id='${card.id}' draggable="true">
+              <div key={card.id} className="result-card" onClick={() => this.props.handleViewCard(card.id)} onDragStart='deck.drag(this, event)' id='${card.id}' draggable="true">
                 <img src={card.card_images[0].image_url_small} alt=""/>
                 <p>{card.name}<br/>
                   {card.type}<br/>
                   {card.atk}/Link {card.linkval}
                 </p>
               </div>
-            : <div key={card.id} class="result-card" onClick={() => this.props.handleViewCard(card)} onDragStart='deck.drag(this, event)' id='${card.id}' draggable="true">
+            : <div key={card.id} class="result-card" onClick={() => this.props.handleViewCard(card.id)} onDragStart='deck.drag(this, event)' id='${card.id}' draggable="true">
                 <img src={card.card_images[0].image_url_small} alt=""/>
                 <p>{card.name}<br/>
                   {card.type} &#9733;{card.level}<br/>
