@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios'
 
 import './App.css';
-import backPic from './img/back-card.jpg'
+
 import Search from './components/Search/Search'
 import Result from './components/Result/Result'
+import ViewCard from './components/ViewCard/ViewCard'
+import Deck from './components/Deck/Deck'
 
 class App extends Component {
   constructor(){
@@ -12,6 +14,7 @@ class App extends Component {
     this.state = {
       cards: [],
       result: [],
+      viewCard: {},
     }
   }
 
@@ -36,21 +39,60 @@ class App extends Component {
     });
   }
 
+  handleViewCard = (card) => {
+    var tempCard = {
+      name: card.name,
+        type: '',
+        atk: '',
+        desc: card.desc,
+        img: card.card_images[0].image_url
+    }
+    if(card.type === 'Spell Card' || card.type === 'Trap Card'){
+      tempCard.type = card.type;
+    }
+    else if(card.type === 'Link Monster'){
+      var arrow = [];
+      var link = card.linkmarkers;
+      for(let i=0; i<link.length; i++){
+          if(link[i] === 'Top'){
+            arrow.push(String.fromCharCode(8593));
+          }
+          else if(link[i] === 'Top-Left'){
+            arrow.push(String.fromCharCode(8598));
+          }
+          else if(link[i] === 'Left'){
+            arrow.push(String.fromCharCode(8592));
+          }
+          else if(link[i] === 'Bottom-Left'){
+            arrow.push(String.fromCharCode(8601));            
+          }
+          else if(link[i] === 'Bottom'){
+            arrow.push(String.fromCharCode(8595));
+          }
+          else if(link[i] === 'Bottom-Right'){
+            arrow.push(String.fromCharCode(8600));
+          }
+          else if(link[i] === 'Right'){
+            arrow.push(String.fromCharCode(8594));
+          }
+          else{
+            arrow.push(String.fromCharCode(8599));
+          }
+      }
+      tempCard.type = `[${card.type.split(' ').join('|')}] ${card.race}/${card.attribute}`;
+      tempCard.atk = `${card.atk}/Link ${card.linkval} [${arrow.join('][')}]`;
+    }
+    else {
+      tempCard.type = `[${card.type.split(' ').join('|')}] ${card.race}/${card.attribute}`;
+      tempCard.atk = `[${String.fromCharCode(9733).repeat(card.level)}] ${card.atk}/${card.def}`;
+    }
+    this.setState({ viewCard: tempCard})
+  }
+
   render (){
     return (
       <div className="container">
-        <div className="details-cont">
-          <div className="card">
-              <img className="card-img" src={backPic} alt=""/>
-          </div>
-          <div className="card-info">Card Info</div>
-          <div className="card-details">
-              <span className='card-name'></span><br/>
-              <span className='card-type blue'></span><br/>
-              <span className='card-atk blue'></span><br/>
-              <span className='card-desc'></span>
-          </div>
-        </div>
+        <ViewCard viewCard={this.state.viewCard}/>
         <div className="cards-cont">
             <div className="top-cont">
                 <div className="select-deck">
@@ -73,15 +115,8 @@ class App extends Component {
                 <Search handleSearch={this.handleSearch}/>
             </div>
             <div className="bot-cont">
-                <div className="deck-container">
-                    <div className="deck-text text" ondragover="deck.allowDrop(event)">Deck: 0</div>
-                    <div className="deck deck-img" ondragover="deck.allowDrop(event)" onDrop="deck.drop(event)"></div>
-                    <div className="extra-text text">Extra: 0</div>
-                    <div className="extra deck-img" ondragover="deck.allowDrop(event)" onDrop="deck.drop(event)"></div>
-                    <div className="side-text text">Side: 0</div>
-                    <div className="side deck-img" ondragover="deck.allowDrop(event)" onDrop="deck.drop_side(event)"></div>
-                </div>
-                <Result result={this.state.result}/>
+              <Deck />  
+              <Result result={this.state.result} handleViewCard={this.handleViewCard}/>
             </div>
         </div>
       </div>
