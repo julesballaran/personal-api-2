@@ -7,7 +7,7 @@ body, html, button, select, input {
 
 .container {
   display: flex;
-  /* background: url('../img/background.jpg'); */
+  background: url('./img/background.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -120,7 +120,7 @@ body, html, button, select, input {
 .search-box {
   height: 50%;
   width: 80%;
-  font-size: 20px;
+  font-size: 1vw;
   padding: 10px;
   color: grey;
 }
@@ -144,7 +144,7 @@ body, html, button, select, input {
 .text{
   display: flex;
   align-items: center;
-  font-size: 20px;
+  font-size: .75rem;
   padding: 2px;
   color: white;
   height: calc(5% - 2px);
@@ -163,7 +163,7 @@ body, html, button, select, input {
 .result-text {
   display: flex;
   align-items: center;
-  font-size: 20px;
+  font-size: .75rem;
   padding: 5px;
   color: white;
   height: 5%;
@@ -217,12 +217,13 @@ body, html, button, select, input {
 
 .select-deck div {
   margin-left: 5px;
+  font-size: .75rem;
 }
 
 .export-btn, button {
   width: 20%;
+  font-size: .75rem;
 }
-
 
 .add-deck-name {
   width: 45%;
@@ -232,12 +233,14 @@ body, html, button, select, input {
   width: 45%;
   text-align-last: center;
   text-transform: uppercase;
-}
-
-.deck-list {
-  height: 27px;
+  font-size: .75rem;
+  height: 1.25rem;
 }
 
 .blue {
   color: blue;
+}
+
+p {
+  font-size: .75rem;
 }
