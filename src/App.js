@@ -217,31 +217,70 @@ class App extends Component {
     localStorage.setItem('decks', JSON.stringify(this.state.deckList));
   }
 
+  readText = (e) => {
+    if(e.target.files && e.target.files[0]){
+      var reader = new FileReader();
+      let name = e.target.files[0].name.split('.');
+      reader.onload = (event) => {  
+        var output=event.target.result;		
+        output=output.split("\n");
+        
+        if(!output[0].match(/#/gi)){
+          return;
+        }
+        var main = [], extra = [], side = [];
+        var checker = '';
+        for(let i=0; i<output.length; i++){
+          if(output[i].match(/#/gi) || output[i].match(/!/gi)){
+            checker = output[i];
+          }
+          else{
+            if(checker.match(/#main/gi)){
+              main.push(output[i]);
+            }
+            else if(checker.match(/#extra/gi)){
+              extra.push(output[i]);
+            }
+            else if(checker.match(/!side/gi)){
+              side.push(output[i]);
+            }
+          }
+        }
+        console.log(main)
+        var deckListCopy = this.state.deckList
+        deckListCopy.push({name: name[0], deck: {main: main, extra: extra, side: side}})
+        this.setState({deckList: deckListCopy})
+        localStorage.setItem('decks', JSON.stringify(this.state.deckList));
+        //window.location.reload();
+      };
+      reader.readAsText(e.target.files[0]);
+    }
+  }
+
   render (){
     return (
       <div className="container">
         <ViewCard viewCard={this.state.viewCard}/>
         <div className="cards-cont">
-            <div className="top-cont">
-                <div className="select-deck">
-                    <NewDeck handleNewDeck={this.handleNewDeck} addNewDeck={this.addNewDeck} deckName={this.state.deckName}/>
-                    <DeckList deckList={this.state.deckList} changeDeck={this.changeDeck} removeDeck={this.removeDeck}/>
-                    <div>
-                    Options: &nbsp;&nbsp;&nbsp;
-                        <button className="export-btn">Save</button>
-                        <input type="file" id="file" style={{display: 'none'}} onchange='file.readText(this)' />
-                        <button><label for="file">Import</label></button> 
-                    </div>
-                </div>
-                <Search handleSearch={this.handleSearch}/>
+          <div className="top-cont">
+            <div className="select-deck">
+              <NewDeck handleNewDeck={this.handleNewDeck} addNewDeck={this.addNewDeck} deckName={this.state.deckName}/>
+              <DeckList deckList={this.state.deckList} changeDeck={this.changeDeck} removeDeck={this.removeDeck}/>
+              <div>Options: &nbsp;&nbsp;&nbsp;
+                <button className="export-btn">Save</button>
+                <input type="file" id="file" style={{display: 'none'}} onChange={this.readText} />
+                <button><label htmlFor="file">Import</label></button> 
+              </div>
             </div>
-            <div className="bot-cont">
-              <Deck 
-                deck={this.state.deck} handleViewCard={this.handleViewCard} handleRemoveCard={this.handleRemoveCard} 
-                allowDrop={this.allowDrop} drop={this.drop} drop_side={this.drop_side}
-              />  
-              <Result result={this.state.result} handleViewCard={this.handleViewCard} drag={this.drag}/>
-            </div>
+            <Search handleSearch={this.handleSearch}/>
+          </div>
+          <div className="bot-cont">
+            <Deck 
+              deck={this.state.deck} handleViewCard={this.handleViewCard} handleRemoveCard={this.handleRemoveCard} 
+              allowDrop={this.allowDrop} drop={this.drop} drop_side={this.drop_side}
+            />  
+            <Result result={this.state.result} handleViewCard={this.handleViewCard} drag={this.drag}/>
+          </div>
         </div>
       </div>
     );
