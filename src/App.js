@@ -31,6 +31,7 @@ class App extends Component {
         },
       }],
       deckName: '',
+      selectedDeck: '',
     }
   }
 
@@ -40,6 +41,7 @@ class App extends Component {
       .then(res => this.setState({ cards: res.data }))
 
     this.setState({ deck: this.state.deckList[0].deck})
+    this.setState({selectedDeck: this.state.deckList[0].name})
   }
 
   handleSearch = (val) => {
@@ -167,10 +169,11 @@ class App extends Component {
 
   addNewDeck = () => {
     var deckListCopy = this.state.deckList
-    if(this.state.deckName){
+    if(this.state.deckName && !this.state.deckList.find(name => name.name === this.state.deckName)){
       if(this.state.deckList[0].name === 'add-deck'){
         deckListCopy.pop()
         this.setState({deckList: deckListCopy})
+        this.setState({selectedDeck: this.state.deckName})
       } 
         this.setState({deckList: this.state.deckList.concat({
           name: this.state.deckName,
@@ -180,9 +183,31 @@ class App extends Component {
             side: [],
           },
         })})
-      
       this.setState({deckName: ''})
     }
+  }
+
+  changeDeck = (e) => {
+    let index = this.state.deckList.findIndex(name => name.name === e.target.value)
+    this.setState({ selectedDeck : e.target.value})
+    this.setState({ deck: this.state.deckList[index].deck})
+  }
+
+  removeDeck = () => {
+    var deckListCopy = this.state.deckList
+    let index = this.state.deckList.findIndex(name => name.name === this.state.selectedDeck)
+    deckListCopy.splice(index, 1)
+    if(deckListCopy.length === 0 ){
+      deckListCopy.push({
+        name: 'add-deck',
+        deck: {
+          main: [],
+          extra: [],
+          side: [],
+        },
+      })
+    }
+    this.setState({ deckList: deckListCopy})
   }
 
   render (){
@@ -193,7 +218,7 @@ class App extends Component {
             <div className="top-cont">
                 <div className="select-deck">
                     <NewDeck handleNewDeck={this.handleNewDeck} addNewDeck={this.addNewDeck} deckName={this.state.deckName}/>
-                    <DeckList deckList={this.state.deckList}/>
+                    <DeckList deckList={this.state.deckList} changeDeck={this.changeDeck} removeDeck={this.removeDeck}/>
                     <div>
                     Options: &nbsp;&nbsp;&nbsp;
                         <button className="export-btn">Save</button>

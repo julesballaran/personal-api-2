@@ -1,14 +1,12 @@
 import React from 'react'
 
-let i = 0;
 export default function DeckList(props){
   return (
     <div>Select Deck:
-      <select className='deck-list'>
-        {props.deckList.map(deck => <option key={i++}>{deck.name}</option>)
-        }
+      <select className='deck-list' onChange={e => props.changeDeck(e)}>
+        {props.deckList.map(deck => <option key={deck.name}>{deck.name}</option>)}
       </select>
-      <button className='remove-btn'>Remove</button>
+      <button onClick={props.removeDeck} className='remove-btn'>Remove</button>
     </div>
   )
 }
