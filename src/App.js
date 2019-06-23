@@ -7,6 +7,8 @@ import Search from './components/Search/Search'
 import Result from './components/Result/Result'
 import ViewCard from './components/ViewCard/ViewCard'
 import Deck from './components/Deck/Deck'
+import DeckList from './components/Deck/DeckList'
+import NewDeck from './components/Deck/NewDeck'
 
 class App extends Component {
   constructor(){
@@ -16,10 +18,19 @@ class App extends Component {
       result: [],
       viewCard: {},
       deck: {
-        main: [46986414, 46986414],
-        extra: [46986414],
-        side: [46986414],
-      }
+        main: [],
+        extra: [],
+        side: [],
+      },
+      deckList: [{
+        name: 'add-deck',
+        deck: {
+          main: [],
+          extra: [],
+          side: [],
+        },
+      }],
+      deckName: '',
     }
   }
 
@@ -27,6 +38,8 @@ class App extends Component {
     axios
       .get('https://db.ygoprodeck.com/api/v5/cardinfo.php')
       .then(res => this.setState({ cards: res.data }))
+
+    this.setState({ deck: this.state.deckList[0].deck})
   }
 
   handleSearch = (val) => {
@@ -148,6 +161,30 @@ class App extends Component {
     }
   }
 
+  handleNewDeck = e => {
+    this.setState({ deckName: e.target.value})
+  }
+
+  addNewDeck = () => {
+    var deckListCopy = this.state.deckList
+    if(this.state.deckName){
+      if(this.state.deckList[0].name === 'add-deck'){
+        deckListCopy.pop()
+        this.setState({deckList: deckListCopy})
+      } 
+        this.setState({deckList: this.state.deckList.concat({
+          name: this.state.deckName,
+          deck: {
+            main: [],
+            extra: [],
+            side: [],
+          },
+        })})
+      
+      this.setState({deckName: ''})
+    }
+  }
+
   render (){
     return (
       <div className="container">
@@ -155,15 +192,8 @@ class App extends Component {
         <div className="cards-cont">
             <div className="top-cont">
                 <div className="select-deck">
-                    <div>New Deck: &nbsp;&nbsp;
-                        <input type="text" class='add-deck-name' />
-                        <button className="add-deck">Add</button>
-                    </div>
-                    <div>Select Deck:
-                        <select className='deck-list'>
-                        </select>
-                        <button className='remove-btn'>Remove</button>
-                    </div>
+                    <NewDeck handleNewDeck={this.handleNewDeck} addNewDeck={this.addNewDeck} deckName={this.state.deckName}/>
+                    <DeckList deckList={this.state.deckList}/>
                     <div>
                     Options: &nbsp;&nbsp;&nbsp;
                         <button className="export-btn">Save</button>
