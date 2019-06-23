@@ -17,8 +17,8 @@ class App extends Component {
       viewCard: {},
       deck: {
         main: [46986414, 46986414],
-        extra: [],
-        side: [],
+        extra: [46986414],
+        side: [46986414],
       }
     }
   }
@@ -112,6 +112,42 @@ class App extends Component {
     this.setState({ deck: deckTemp})
   }
 
+  allowDrop = (e) => {
+    e.preventDefault();
+  }
+
+  drag = (card, e) => {
+    e.dataTransfer.setData('text', card);
+  }
+
+  drop = (e) => {
+    this.addCard(e.dataTransfer.getData('text'))
+  }
+
+  drop_side = (e) => {
+    this.addCard(e.dataTransfer.getData('text'), true)
+  }
+
+  addCard = (cardId, c) => {
+    const card = this.state.cards.find((card) => card.id == cardId)
+    var deckTemp = this.state.deck;
+    if(card){
+      if (c){
+        if(deckTemp.side.length < 15)
+          deckTemp.side.push(cardId);
+      }
+      else if(card.type.match(/link/gi) || card.type.match(/synchro/gi) || card.type.match(/fusion/gi) || card.type.match(/xyz/gi) || card.type.match(/ritual/gi)){
+        if(deckTemp.extra.length < 15)
+          deckTemp.extra.push(cardId);
+      }
+      else{
+        if(deckTemp.main.length < 60)
+          deckTemp.main.push(cardId);
+      }
+      this.setState({deck: deckTemp})
+    }
+  }
+
   render (){
     return (
       <div className="container">
@@ -138,8 +174,11 @@ class App extends Component {
                 <Search handleSearch={this.handleSearch}/>
             </div>
             <div className="bot-cont">
-              <Deck deck={this.state.deck} handleViewCard={this.handleViewCard} handleRemoveCard={this.handleRemoveCard}/>  
-              <Result result={this.state.result} handleViewCard={this.handleViewCard}/>
+              <Deck 
+                deck={this.state.deck} handleViewCard={this.handleViewCard} handleRemoveCard={this.handleRemoveCard} 
+                allowDrop={this.allowDrop} drop={this.drop} drop_side={this.drop_side}
+              />  
+              <Result result={this.state.result} handleViewCard={this.handleViewCard} drag={this.drag}/>
             </div>
         </div>
       </div>
