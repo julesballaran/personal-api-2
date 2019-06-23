@@ -22,14 +22,7 @@ class App extends Component {
         extra: [],
         side: [],
       },
-      deckList: [{
-        name: 'add-deck',
-        deck: {
-          main: [],
-          extra: [],
-          side: [],
-        },
-      }],
+      deckList: JSON.parse(localStorage.getItem('decks')) || [{name: 'add-deck', deck: {main: [], extra: [], side: []}}],
       deckName: '',
       selectedDeck: '',
     }
@@ -41,7 +34,7 @@ class App extends Component {
       .then(res => this.setState({ cards: res.data }))
 
     this.setState({ deck: this.state.deckList[0].deck})
-    this.setState({selectedDeck: this.state.deckList[0].name})
+    this.setState({ selectedDeck: this.state.deckList[0].name})
   }
 
   handleSearch = (val) => {
@@ -125,6 +118,11 @@ class App extends Component {
       deckTemp.side.splice(parseInt(str[1]), 1);
     }
     this.setState({ deck: deckTemp})
+    var deckListCopy = this.state.deckList
+    let index = this.state.deckList.findIndex(name => name.name === this.state.selectedDeck)
+    deckListCopy[index].deck = this.state.deck
+    this.setState({deckList: deckListCopy})
+    localStorage.setItem('decks', JSON.stringify(this.state.deckList));
   }
 
   allowDrop = (e) => {
@@ -160,6 +158,11 @@ class App extends Component {
           deckTemp.main.push(cardId);
       }
       this.setState({deck: deckTemp})
+      var deckListCopy = this.state.deckList
+      let index = this.state.deckList.findIndex(name => name.name === this.state.selectedDeck)
+      deckListCopy[index].deck = this.state.deck
+      this.setState({deckList: deckListCopy})
+      localStorage.setItem('decks', JSON.stringify(this.state.deckList));
     }
   }
 
@@ -171,19 +174,20 @@ class App extends Component {
     var deckListCopy = this.state.deckList
     if(this.state.deckName && !this.state.deckList.find(name => name.name === this.state.deckName)){
       if(this.state.deckList[0].name === 'add-deck'){
-        deckListCopy.pop()
-        this.setState({deckList: deckListCopy})
+        deckListCopy.splice(0, 1)
         this.setState({selectedDeck: this.state.deckName})
-      } 
-        this.setState({deckList: this.state.deckList.concat({
-          name: this.state.deckName,
-          deck: {
-            main: [],
-            extra: [],
-            side: [],
-          },
-        })})
+      }
+      deckListCopy.push({
+        name: this.state.deckName,
+        deck: {
+          main: [],
+          extra: [],
+          side: [],
+        },
+      })
+      this.setState({deckList: deckListCopy})
       this.setState({deckName: ''})
+      localStorage.setItem('decks', JSON.stringify(this.state.deckList));
     }
   }
 
@@ -208,6 +212,9 @@ class App extends Component {
       })
     }
     this.setState({ deckList: deckListCopy})
+    this.setState({ selectedDeck: this.state.deckList[0].name})
+    this.setState({ deck: this.state.deckList[0].deck})
+    localStorage.setItem('decks', JSON.stringify(this.state.deckList));
   }
 
   render (){
