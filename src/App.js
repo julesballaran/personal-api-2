@@ -9,6 +9,7 @@ import ViewCard from './components/ViewCard/ViewCard'
 import Deck from './components/Deck/Deck'
 import DeckList from './components/Deck/DeckList'
 import NewDeck from './components/Deck/NewDeck'
+import Options from './components/Deck/Options'
 
 class App extends Component {
   constructor(){
@@ -257,6 +258,27 @@ class App extends Component {
     }
   }
 
+  fileSave = () =>{
+    var out = '#main\n';
+
+    for(let i=0; i<this.state.deck.main.length; i++){
+        out += this.state.deck.main[i] + '\n';
+    }
+    out += '\n#extra\n';
+    for(let i=0; i<this.state.deck.extra.length; i++){
+        out += this.state.deck.extra[i] + '\n';
+    }
+    out += '\n!side\n';
+    for(let i=0; i<this.state.deck.side.length; i++){
+        out += this.state.deck.side[i] + '\n';
+    }
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:attachment/text,' + encodeURIComponent(out);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = `${this.state.selectedDeck}.ydk`;
+    hiddenElement.click();
+  }
+
   render (){
     return (
       <div className="container">
@@ -266,11 +288,7 @@ class App extends Component {
             <div className="select-deck">
               <NewDeck handleNewDeck={this.handleNewDeck} addNewDeck={this.addNewDeck} deckName={this.state.deckName}/>
               <DeckList deckList={this.state.deckList} changeDeck={this.changeDeck} removeDeck={this.removeDeck}/>
-              <div>Options: &nbsp;&nbsp;&nbsp;
-                <button className="export-btn">Save</button>
-                <input type="file" id="file" style={{display: 'none'}} onChange={this.readText} />
-                <button><label htmlFor="file">Import</label></button> 
-              </div>
+              <Options readText={this.readText} fileSave={this.fileSave}/>
             </div>
             <Search handleSearch={this.handleSearch}/>
           </div>

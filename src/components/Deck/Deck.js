@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 
 export default class Deck extends Component {
-  constructor(props){
-    super(props);
-  }
   render() {
     return (
       <div className="deck-container">
@@ -11,7 +8,7 @@ export default class Deck extends Component {
         <div className="deck deck-img" onDragOver={e => this.props.allowDrop(e)} onDrop={e => this.props.drop(e)}>
           {this.props.deck.main.map((card, i )=> (
             <div className='card-cont' key={i} id={card} onClick={() => this.props.handleViewCard(card)} onDoubleClick={() => this.props.handleRemoveCard(`main:${i}`)}>
-              <img className='card-small-img' src={`https://storage.googleapis.com/ygoprodeck.com/pics_small/${card}.jpg`}/>
+              <img className='card-small-img' src={`https://storage.googleapis.com/ygoprodeck.com/pics_small/${card}.jpg`} alt=''/>
             </div>
           ))}
         </div>
@@ -19,7 +16,7 @@ export default class Deck extends Component {
         <div className="extra deck-img" onDragOver={e => this.props.allowDrop(e)} onDrop={e => this.props.drop(e)}>
           {this.props.deck.extra.map((card, i )=> (
             <div className='card-cont' key={i} id={card} onClick={() => this.props.handleViewCard(card)} onDoubleClick={() => this.props.handleRemoveCard(`extra:${i}`)}>
-              <img className='card-small-img' src={`https://storage.googleapis.com/ygoprodeck.com/pics_small/${card}.jpg`}/>
+              <img className='card-small-img' src={`https://storage.googleapis.com/ygoprodeck.com/pics_small/${card}.jpg`} alt=''/>
             </div>
           ))}
         </div>
@@ -27,7 +24,7 @@ export default class Deck extends Component {
         <div className="side deck-img" onDragOver={e => this.props.allowDrop(e)} onDrop={e => this.props.drop_side(e)}>
           {this.props.deck.side.map((card, i )=> (
             <div className='card-cont' key={i} id={card} onClick={() => this.props.handleViewCard(card)} onDoubleClick={() => this.props.handleRemoveCard(`side:${i}`)}>
-              <img className='card-small-img' src={`https://storage.googleapis.com/ygoprodeck.com/pics_small/${card}.jpg`}/>
+              <img className='card-small-img' src={`https://storage.googleapis.com/ygoprodeck.com/pics_small/${card}.jpg`} alt=''/>
             </div>
           ))}
         </div>
